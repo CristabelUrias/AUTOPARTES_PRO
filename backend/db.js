@@ -22,8 +22,7 @@ const pool = mysql.createPool({
     conn.release();
   } catch (err) {
     console.error("❌  Error conectando a MySQL:", err.message);
-    process.exit(1);
+    // NO mates el servidor en producción
+    // process.exit(1);
   }
-})();
-
-module.exports = pool;
+})();module.exports = pool;

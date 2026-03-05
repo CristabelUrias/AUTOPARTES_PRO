@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://autopartes-pro-1-backend-srid.onrender.com/api',
   timeout: 10000,
 });
 
@@ -28,10 +28,8 @@ export default api;
 
 // ── Auth ──────────────────────────────────────────────
 export const authApi = {
-  login:  (data)    => api.post('/auth/login', data),
-  me:     ()        => api.get('/auth/me'),
+  login:  (data) => api.post('/auth/login', data),
 };
-
 // ── Parts ─────────────────────────────────────────────
 export const partsApi = {
   list:     (params) => api.get('/parts', { params }),

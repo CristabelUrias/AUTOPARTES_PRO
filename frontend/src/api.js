@@ -8,18 +8,33 @@ function getToken() {
 
 async function request(path, options = {}) {
   const token = getToken();
+
   const res = await fetch(`${BASE}${path}`, {
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
     },
     ...options,
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Error del servidor");
+
+  const text = await res.text(); // ✅ nunca revienta
+  let data = null;
+
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { message: text };
+    }
+  }
+
+  if (!res.ok) {
+    throw new Error(data?.message || `HTTP ${res.status}`);
+  }
+
   return data;
 }
-
 // ── Auth ────────────────────────────────────────────────
 export const authAPI = {
   login:  (credentials) => request("/auth/login", { method: "POST", body: JSON.stringify(credentials) }),

@@ -11,7 +11,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
-  "proxy": "http://localhost:5000",
+  "proxy": "https://autopartes-pro.onrender.com/api",
   "eslintConfig": { "extends": ["react-app"] },
   "browserslist": {
     "production": [">0.2%", "not dead", "not op_mini all"],

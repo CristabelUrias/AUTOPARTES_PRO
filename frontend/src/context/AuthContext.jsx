@@ -11,8 +11,8 @@ useEffect(() => {
   const token = localStorage.getItem('ap_token');
   if (!token) { setLoading(false); return; }
 
-  authApi.me()
-    .then(r => {
+  authAPI.me()
+  .then(data => setUser(data.user))
       // r.data = { ok:true, user:{...} }
       setUser(r.data.user);
     })
@@ -24,16 +24,16 @@ useEffect(() => {
 }, []);
 
 const login = useCallback(async (username, password) => {
-  const res = await authApi.login({ username, password });
-  // res.data = { ok:true, token:'...', user:{...} }
+  const data = await authAPI.login({ username, password });
 
-  if (!res.data?.ok) {
-    throw new Error(res.data?.message || 'Credenciales incorrectas');
+  if (!data?.token) {
+    throw new Error(data?.message || "Login sin token");
   }
 
-  localStorage.setItem('ap_token', res.data.token);
-  setUser(res.data.user);
-  return res.data.user;
+  localStorage.setItem("ap_token", data.token);
+  setUser(data.user);
+
+  return data.user;
 }, []);
 
   const logout = useCallback(() => {

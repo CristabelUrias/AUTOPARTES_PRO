@@ -11,28 +11,31 @@ useEffect(() => {
   const token = localStorage.getItem('ap_token');
   if (!token) { setLoading(false); return; }
 
-  authAPI.me()
-  .then(data => setUser(data.user))
-      // r.data = { ok:true, user:{...} }
-      setUser(r.data.user);
-    })
-    .catch(() => {
-      localStorage.removeItem('ap_token');
-      setUser(null);
-    })
-    .finally(() => setLoading(false));
+ authAPI.me()
+  .then(data => {
+    if (data?.user) setUser(data.user);
+    else throw new Error("Respuesta /me inválida");
+  })
+  .catch(() => {
+    localStorage.removeItem("ap_token");
+    setUser(null);
+  })
+  .finally(() => setLoading(false));
 }, []);
 
 const login = useCallback(async (username, password) => {
-  const data = await authAPI.login({ username, password });
+  const data = await authAPI.login({ username, password }); // OJO: authAPI (como lo exportas)
 
-  if (!data?.token) {
-    throw new Error(data?.message || "Login sin token");
+  // ✅ Evita el crash y te muestra un error claro
+  if (!data) {
+    throw new Error("La API devolvió respuesta vacía (null). Revisa Network → Response.");
+  }
+  if (!data.token) {
+    throw new Error(data.message || "Login sin token. Revisa usuario/contraseña.");
   }
 
   localStorage.setItem("ap_token", data.token);
   setUser(data.user);
-
   return data.user;
 }, []);
 
